@@ -3,6 +3,7 @@ var cheerio = require('cheerio');
 var fs = require('fs');
 var RSS = require('rss');
 var http = require("http");
+var crypto = require('crypto');
 
 
 
@@ -18,10 +19,14 @@ var feed = new RSS({
 var $ = cheerio.load(fs.readFileSync('jobs.html'));
 
 $('.PSLEVEL1GRID tr').each(function(x, el) {
-  feed.item({
+  var item = {
       title: $(el).find('.PSHYPERLINK a').html(),
       date: $(el).find('.PSEDITBOX_DISPONLY').html(),
-  });
+      url: 'http://letsencrypt.erikschwartz.net/'
+  };
+  item.guid = '' + item.title + item.date;
+  item.guid = crypto.createHash('md5').update(item.guid).digest('hex');
+  feed.item(item);
 });
 
 // cache the xml to send to clients

@@ -14,7 +14,7 @@ function getJobs() {
       pubDate: new Date(),
   });
 
-  var $ = cheerio.load(fs.readFileSync('jobs.html'));
+  var $ = cheerio.load(fs.readFileSync('raw_jobs.html'));
 
   $('.PSLEVEL1GRID tr').each(function(x, el) {
     // skip headers
@@ -35,9 +35,4 @@ function getJobs() {
   return feed.xml();
 }
 
-var server = http.createServer(function(request, response) {
-  response.writeHead(200, {"Content-Type": "text/xml"});
-  response.write(getJobs());
-  response.end();
-});
-server.listen(80);
+process.stdout.write(getJobs());
